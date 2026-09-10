@@ -8,6 +8,7 @@ data "aws_cloudfront_origin_request_policy" "all_viewer" {
   name = "Managed-AllViewerExceptHostHeader"
 }
 
+# trivy:ignore:AVD-AWS-0011 - WAF is omitted by default to prevent unexpected monthly costs for users
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -58,5 +59,22 @@ output "cloudfront_url" {
 }
 
 output "z_NEXT_STEP_REQUIRED" {
-  value = "⚠️ Your infrastructure is up, but these URLs will return 503 errors until you push your code to GitHub and the Actions pipeline deploys your container."
+  value = <<EOT
+
+====================================================================
+🚀 INFRASTRUCTURE PROVISIONED SUCCESSFULLY!
+====================================================================
+
+Your AWS environment is ready. However, your URLs listed above will 
+return an error until your application code is actually deployed.
+
+TO DEPLOY YOUR APP:
+1. git add .
+2. git commit -m "ci: configure deploy-stack"
+3. git push origin main
+
+Once the GitHub Action completes, your site will be live at the 
+CloudFront URL!
+====================================================================
+EOT
 }
