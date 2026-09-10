@@ -10,8 +10,8 @@ RUN npm ci
 
 # Copy source code and compile the SvelteKit application
 COPY . .
-# (Our adapter will trigger safely inside this ephemeral container)
-RUN npm run build
+# Inject the bypass flag so the adapter doesn't trigger inside the container!
+RUN DEPLOY_STACK_BYPASS=true npm run build
 
 # ==========================================
 # Stage 2: Production (Zero-CVE)
@@ -38,5 +38,5 @@ RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 USER node
 EXPOSE 3000
 
-# 6. Execute the raw Node server directly (Bypassing NPM)
+# 6. Execute the raw Node server directly
 CMD ["node", "build/index.js"]
